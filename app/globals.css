@@ -1,0 +1,684 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-sora), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-heat-500: #ff7a45;
+  --color-heat-400: #ffa25c;
+  --color-chill-500: #4cc9f0;
+  --color-chill-400: #7ee0ff;
+  --color-nino-500: #ffb703;
+  --color-ink-900: #05070f;
+}
+
+:root {
+  color-scheme: dark;
+  --glass-tint: 255 255 255;
+
+  /* map palette read by the two SVG maps; the day theme overrides these */
+  --map-sea-0: #0f2540;
+  --map-sea-1: #0a1a30;
+  --map-sea-2: #071120;
+  --map-land: #244d74;
+  --map-coast: #8fdcff;
+  --map-coast-soft: rgba(226, 246, 255, 0.24);
+  --map-grid: #7dd3fc;
+  --map-label: #a8dcf5;
+  --par-edge: #5cc8ff;
+  --map-track: #e2f6ff;
+  --map-dot-ring: rgba(5, 10, 22, 0.75);
+  --map-dot-active: #ffffff;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background-color: #05070f;
+  color: rgb(238 242 255);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* ---------- ambient backdrop ---------- */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(60rem 40rem at 8% -10%, rgba(56, 89, 255, 0.28), transparent 60%),
+    radial-gradient(50rem 36rem at 92% 4%, rgba(0, 194, 184, 0.2), transparent 62%),
+    radial-gradient(46rem 34rem at 70% 92%, rgba(255, 122, 69, 0.16), transparent 60%),
+    radial-gradient(40rem 30rem at 18% 84%, rgba(120, 60, 255, 0.16), transparent 62%),
+    linear-gradient(180deg, #05070f 0%, #060a18 45%, #04060d 100%);
+}
+
+.aurora::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.42;
+  will-change: transform;
+  animation: drift 26s ease-in-out infinite;
+}
+
+.orb-a {
+  width: 34rem;
+  height: 34rem;
+  top: -10rem;
+  left: -8rem;
+  background: #2f4bff;
+}
+
+.orb-b {
+  width: 28rem;
+  height: 28rem;
+  top: 12rem;
+  right: -10rem;
+  background: #00c2b8;
+  opacity: 0.34;
+  animation-delay: -8s;
+}
+
+.orb-c {
+  width: 30rem;
+  height: 30rem;
+  bottom: -12rem;
+  left: 30%;
+  background: #7a3cff;
+  animation-delay: -15s;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(3rem, -2rem, 0) scale(1.08);
+  }
+  66% {
+    transform: translate3d(-2rem, 2.5rem, 0) scale(0.96);
+  }
+}
+
+/* ---------- glass surfaces ---------- */
+.glass {
+  position: relative;
+  background: linear-gradient(158deg, rgb(var(--glass-tint) / 0.1), rgb(var(--glass-tint) / 0.028));
+  border: 1px solid rgb(var(--glass-tint) / 0.11);
+  border-radius: 1.5rem;
+  backdrop-filter: blur(26px) saturate(150%);
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+  box-shadow:
+    0 28px 60px -28px rgba(0, 0, 0, 0.85),
+    0 2px 10px -4px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgb(var(--glass-tint) / 0.14);
+}
+
+.glass-soft {
+  background: rgb(var(--glass-tint) / 0.05);
+  border: 1px solid rgb(var(--glass-tint) / 0.08);
+  border-radius: 1rem;
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgb(var(--glass-tint) / 0.08);
+}
+
+/* specular sheen across the top edge of a card */
+.glass-sheen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(140deg, rgb(255 255 255 / 0.34), rgb(255 255 255 / 0.02) 42%, transparent 60%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.lift {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.lift:hover {
+  transform: translateY(-3px);
+  border-color: rgb(var(--glass-tint) / 0.2);
+  box-shadow:
+    0 34px 70px -28px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgb(var(--glass-tint) / 0.2);
+}
+
+/* ---------- type ---------- */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.gradient-text {
+  background: linear-gradient(96deg, #ffffff 6%, #c7d6ff 46%, #7ee0ff 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* sea and area names drawn inside the SVG maps */
+.map-legend {
+  opacity: 0.62;
+}
+
+/* ---------- bits ---------- */
+.chip-row {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.chip-row::-webkit-scrollbar {
+  display: none;
+}
+
+.pulse-dot {
+  position: relative;
+}
+
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 1px solid currentColor;
+  opacity: 0.5;
+  animation: ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.6;
+  }
+  70%,
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* A quake from the last 24 hours keeps a slow ripple, so "new" is visible at a glance. */
+.quake-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: quake-ripple 2.8s ease-out infinite;
+}
+
+@keyframes quake-ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Typhoon panel: circulation turns counter-clockwise in the northern hemisphere,
+   and the forecast dashes flow along the track. Slow on purpose — a fast spin
+   reads as a loading spinner, not as weather. */
+.typhoon-spin {
+  animation: typhoon-spin 24s linear infinite;
+}
+
+.typhoon-spin-slow {
+  animation: typhoon-spin 46s linear infinite;
+}
+
+@keyframes typhoon-spin {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.typhoon-track {
+  animation: typhoon-flow 1.3s linear infinite;
+}
+
+@keyframes typhoon-flow {
+  to {
+    stroke-dashoffset: -22;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb,
+  .pulse-dot::after,
+  .rise,
+  .quake-pulse,
+  .typhoon-spin,
+  .typhoon-spin-slow,
+  .typhoon-track {
+    animation: none !important;
+  }
+  .lift:hover {
+    transform: none;
+  }
+}
+
+/* ---------- live weather backdrop ---------- */
+.weather-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  animation: weather-in 1.6s ease both;
+}
+
+@keyframes weather-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* sun / moon */
+.sun-core,
+.moon-core {
+  position: absolute;
+  top: -16vh;
+  right: -12vw;
+  width: 46vw;
+  height: 46vw;
+  max-width: 640px;
+  max-height: 640px;
+  border-radius: 50%;
+  animation: sun-breathe 14s ease-in-out infinite;
+}
+
+.sun-core {
+  background: radial-gradient(
+    circle,
+    rgba(255, 214, 150, 0.5) 0%,
+    rgba(255, 176, 92, 0.24) 38%,
+    rgba(255, 150, 60, 0) 72%
+  );
+}
+
+.moon-core {
+  background: radial-gradient(
+    circle,
+    rgba(206, 224, 255, 0.4) 0%,
+    rgba(150, 180, 255, 0.18) 40%,
+    rgba(120, 150, 255, 0) 72%
+  );
+}
+
+.sun-rays {
+  position: absolute;
+  top: -34vh;
+  right: -30vw;
+  width: 84vw;
+  height: 84vw;
+  max-width: 1150px;
+  max-height: 1150px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(255, 222, 165, 0.085) 0deg 3.5deg,
+    transparent 3.5deg 15deg
+  );
+  -webkit-mask-image: radial-gradient(circle, transparent 20%, #000 44%, transparent 76%);
+  mask-image: radial-gradient(circle, transparent 20%, #000 44%, transparent 76%);
+  animation: spin 180s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sun-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.82;
+  }
+  50% {
+    transform: scale(1.07);
+    opacity: 1;
+  }
+}
+
+/* clouds */
+.cloud {
+  position: absolute;
+  filter: blur(2px);
+  animation-name: cloud-drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.cloud svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* a slower, blurrier copy far behind the first layer, for depth */
+.cloud--far {
+  filter: blur(6px);
+  opacity: 0.42;
+  animation-duration: 190s !important;
+}
+
+@keyframes cloud-drift {
+  from {
+    transform: translate3d(-35vw, 0, 0);
+  }
+  to {
+    transform: translate3d(125vw, 0, 0);
+  }
+}
+
+/* rain */
+.rain-drop {
+  position: absolute;
+  top: -12vh;
+  width: 1px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to bottom,
+    rgba(160, 205, 255, 0) 0%,
+    rgba(196, 228, 255, 0.65) 55%,
+    rgba(220, 240, 255, 0.15) 100%
+  );
+  animation-name: rainfall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes rainfall {
+  from {
+    transform: translate3d(0, -20vh, 0);
+  }
+  to {
+    transform: translate3d(var(--dx, -3vw), 118vh, 0);
+  }
+}
+
+/* fog */
+.fog-band {
+  position: absolute;
+  left: -20vw;
+  width: 140vw;
+  height: 18vh;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, transparent, rgba(220, 235, 255, 0.09), transparent);
+  filter: blur(20px);
+  animation: fog-drift 70s ease-in-out infinite alternate;
+}
+
+@keyframes fog-drift {
+  from {
+    transform: translate3d(-6vw, 0, 0);
+  }
+  to {
+    transform: translate3d(6vw, 0, 0);
+  }
+}
+
+/* sunny motes */
+.mote {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 234, 190, 0.85);
+  box-shadow: 0 0 10px rgba(255, 208, 130, 0.7);
+  animation-name: mote-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes mote-float {
+  0% {
+    transform: translate3d(0, 12vh, 0) scale(0.6);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.9;
+  }
+  78% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate3d(3vw, -34vh, 0) scale(1);
+    opacity: 0;
+  }
+}
+
+/* overcast: a grey veil so the sky reads heavy, not clear */
+.cloud-wash {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(80rem 40rem at 50% -12%, rgba(140, 166, 205, 0.1), transparent 68%),
+    linear-gradient(180deg, rgba(120, 146, 184, 0.07), transparent 55%);
+}
+
+/* storm: darken the sky behind the rain */
+.storm-wash {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(90rem 60rem at 50% -10%, rgba(10, 16, 34, 0.65), transparent 70%),
+    linear-gradient(180deg, rgba(8, 12, 26, 0.55), rgba(8, 12, 26, 0.2) 60%, rgba(8, 12, 26, 0.5));
+}
+
+/* thunder */
+.lightning {
+  position: absolute;
+  inset: 0;
+  background: rgba(226, 238, 255, 0.95);
+  opacity: 0;
+  animation: lightning 11s ease-out infinite;
+}
+
+@keyframes lightning {
+  0%,
+  91%,
+  100% {
+    opacity: 0;
+  }
+  92% {
+    opacity: 0.16;
+  }
+  93% {
+    opacity: 0.03;
+  }
+  94% {
+    opacity: 0.2;
+  }
+  95% {
+    opacity: 0;
+  }
+}
+
+/* thin out the rain on phones so it stays cheap */
+@media (max-width: 640px) {
+  .rain-drop:nth-child(2n),
+  .mote:nth-child(2n) {
+    display: none;
+  }
+
+  /* vw-sized clouds get tiny on a phone; keep them readable in the scene */
+  .cloud {
+    min-width: 140px;
+    min-height: 54px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sun-core,
+  .moon-core,
+  .sun-rays,
+  .cloud,
+  .rain-drop,
+  .fog-band,
+  .mote,
+  .lightning,
+  .weather-layer {
+    animation: none !important;
+  }
+}
+
+/* ---------- windy ---------- */
+.wind-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.leaf {
+  position: absolute;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.35));
+  animation-name: leaf-fly;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes leaf-fly {
+  0% {
+    transform: translate3d(-14vw, 8vh, 0) rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate3d(42vw, -8vh, 0) rotate(220deg) scale(1);
+  }
+  88% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate3d(108vw, 12vh, 0) rotate(520deg) scale(0.9);
+    opacity: 0;
+  }
+}
+
+.gust {
+  position: absolute;
+  height: 1px;
+  width: 28vw;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, transparent, rgba(198, 224, 255, 0.28), transparent);
+  animation-name: gust-sweep;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes gust-sweep {
+  0% {
+    transform: translate3d(-34vw, 0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(112vw, -3vh, 0);
+    opacity: 0;
+  }
+}
+
+.kite {
+  position: absolute;
+  animation: kite-drift 34s linear infinite;
+  will-change: transform;
+}
+
+.kite svg {
+  display: block;
+  animation: kite-bob 3.6s ease-in-out infinite;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.35));
+}
+
+@keyframes kite-drift {
+  from {
+    transform: translate3d(-16vw, 0, 0);
+  }
+  to {
+    transform: translate3d(112vw, -5vh, 0);
+  }
+}
+
+@keyframes kite-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(-16px) rotate(7deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leaf,
+  .gust,
+  .kite,
+  .kite svg {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,196 @@
+/* ============================================================
+   Day theme — loaded only when the page asks for it (see ThemeLink)
+   The whole page is built on white-alpha utilities over a dark
+   aurora. Rather than refactor every class, the day theme flips
+   the tint the glass is built from and remaps those utilities to
+   ink, so one attribute on <html> re-skins both surfaces.
+   ============================================================ */
+
+:root {
+  color-scheme: light;
+  --glass-tint: 15 23 42;
+  --map-sea-0: #dcebf9;
+  --map-sea-1: #d2e3f4;
+  --map-sea-2: #c8dcef;
+  --map-land: #fbfdff;
+  --map-coast: #3f82ad;
+  --map-coast-soft: rgba(91, 157, 201, 0.3);
+  --map-grid: #6f9fc0;
+  --map-label: #3f6e8d;
+  --par-edge: #0284c7;
+  --map-track: #24506f;
+  --map-dot-ring: rgba(15, 23, 42, 0.45);
+  --map-dot-active: #0b1220;
+}
+
+body {
+  background-color: #eef4fb;
+  color: #16233a;
+}
+
+.aurora {
+  background:
+    radial-gradient(60rem 40rem at 8% -10%, rgba(147, 197, 253, 0.55), transparent 60%),
+    radial-gradient(50rem 36rem at 92% 4%, rgba(186, 230, 253, 0.6), transparent 62%),
+    radial-gradient(46rem 34rem at 70% 92%, rgba(253, 230, 138, 0.35), transparent 60%),
+    radial-gradient(40rem 30rem at 18% 84%, rgba(196, 181, 253, 0.28), transparent 62%),
+    linear-gradient(180deg, #f6faff 0%, #edf4fc 45%, #e7eef8 100%);
+}
+
+.aurora::after {
+  opacity: 0.02;
+}
+
+.orb {
+  opacity: 0.28;
+}
+
+.glass {
+  background: linear-gradient(158deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.8));
+  border-color: rgb(15 23 42 / 0.13);
+  box-shadow:
+    0 26px 54px -30px rgba(30, 57, 92, 0.4),
+    0 2px 10px -4px rgba(30, 57, 92, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.glass-sheen::before {
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.18) 42%, transparent 60%);
+}
+
+.lift:hover {
+  border-color: rgb(15 23 42 / 0.18);
+  box-shadow:
+    0 30px 62px -30px rgba(30, 57, 92, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.gradient-text {
+  background: linear-gradient(96deg, #0b1220 6%, #1d4ed8 46%, #0369a1 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* the backdrop reads as a bright sky, not a night one */
+.weather-layer {
+  opacity: 0.55;
+}
+
+.moon-core {
+  background: radial-gradient(circle, rgba(191, 219, 254, 0.5) 0%, rgba(147, 197, 253, 0.24) 40%, rgba(147, 197, 253, 0) 72%);
+}
+
+.sun-rays {
+  background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.12) 0deg 3.5deg, transparent 3.5deg 15deg);
+}
+
+.rain-drop,
+.fog-band {
+  filter: invert(1) opacity(0.55);
+}
+
+.storm-wash {
+  opacity: 0.35;
+}
+
+[aria-label^="Switch to"] {
+  border-color: rgba(15, 23, 42, 0.22);
+  background-color: rgba(255, 255, 255, 0.92);
+  color: #16233a;
+}
+
+/* ---- text: white alphas become ink alphas ---- */
+[class~="text-white"] { color: #0b1220; }
+[class~="text-white/90"] { color: rgba(11, 18, 32, 0.96); }
+[class~="text-white/85"] { color: rgba(11, 18, 32, 0.94); }
+[class~="text-white/80"] { color: rgba(11, 18, 32, 0.92); }
+[class~="text-white/75"] { color: rgba(11, 18, 32, 0.9); }
+[class~="text-white/70"] { color: rgba(11, 18, 32, 0.84); }
+[class~="text-white/60"] { color: rgba(11, 18, 32, 0.78); }
+[class~="text-white/55"] { color: rgba(11, 18, 32, 0.74); }
+[class~="text-white/50"] { color: rgba(11, 18, 32, 0.7); }
+[class~="text-white/45"] { color: rgba(11, 18, 32, 0.66); }
+[class~="text-white/40"] { color: rgba(11, 18, 32, 0.62); }
+[class~="text-white/35"] { color: rgba(11, 18, 32, 0.56); }
+[class~="text-white/30"] { color: rgba(11, 18, 32, 0.5); }
+[class~="text-white/25"] { color: rgba(11, 18, 32, 0.44); }
+
+/* ---- surfaces: white washes become faint ink washes ---- */
+[class~="bg-white"] { background-color: #ffffff; }
+[class~="bg-white/30"] { background-color: rgba(15, 23, 42, 0.12); }
+[class~="bg-white/25"] { background-color: rgba(15, 23, 42, 0.14); }
+[class~="bg-white/15"] { background-color: rgba(15, 23, 42, 0.18); }
+[class~="bg-white/10"] { background-color: rgba(15, 23, 42, 0.07); }
+[class~="bg-white/5"] { background-color: rgba(15, 23, 42, 0.04); }
+[class~="bg-white/[0.07]"] { background-color: rgba(15, 23, 42, 0.055); }
+[class~="bg-white/[0.06]"] { background-color: rgba(15, 23, 42, 0.05); }
+[class~="bg-white/[0.05]"] { background-color: rgba(15, 23, 42, 0.045); }
+[class~="bg-white/[0.04]"] { background-color: rgba(15, 23, 42, 0.04); }
+[class~="bg-white/[0.035]"] { background-color: rgba(15, 23, 42, 0.035); }
+[class~="bg-white/[0.03]"] { background-color: rgba(15, 23, 42, 0.03); }
+
+/* ---- borders and rings ---- */
+[class~="border-white/10"] { border-color: rgba(15, 23, 42, 0.12); }
+[class~="border-white/15"] { border-color: rgba(15, 23, 42, 0.16); }
+[class~="border-white/20"] { border-color: rgba(15, 23, 42, 0.2); }
+[class~="border-white/25"] { border-color: rgba(15, 23, 42, 0.28); }
+[class~="border-white/[0.07]"] { border-color: rgba(15, 23, 42, 0.1); }
+[class~="border-white/[0.06]"] { border-color: rgba(15, 23, 42, 0.09); }
+[class~="ring-white/10"] { --tw-ring-color: rgba(15, 23, 42, 0.12); }
+[class~="fill-white/45"] { fill: rgba(15, 23, 42, 0.4); }
+
+/* ---- accent text: the pastel tones need to darken to stay readable ---- */
+[class~="text-sky-200"] { color: #0369a1; }
+[class~="text-sky-100"] { color: #075985; }
+[class~="text-amber-200"] { color: #b45309; }
+[class~="text-amber-100"] { color: #92400e; }
+[class~="text-amber-50"] { color: #78350f; }
+[class~="text-rose-200"] { color: #be123c; }
+[class~="text-rose-100"] { color: #9f1239; }
+[class~="text-emerald-100"] { color: #047857; }
+[class~="text-orange-200"] { color: #c2410c; }
+[class~="text-orange-100"] { color: #c2410c; }
+[class~="text-indigo-200"] { color: #4338ca; }
+[class~="text-sky-300"] { color: #0369a1; }
+[class~="text-orange-300"] { color: #ea580c; }
+
+/* ---- remaining dark-only assumptions ---- */
+.map-legend {
+  opacity: 0.9;
+}
+
+/* card glows are tuned for a dark surface; soften them in daylight */
+[style*="radial-gradient"] {
+  opacity: 0.5;
+}
+
+/* small uppercase chips ("upland", "air temp") need more weight on white */
+[class~="text-white/40"][class~="uppercase"],
+[class~="text-white/35"][class~="uppercase"] {
+  color: rgba(11, 18, 32, 0.75);
+}
+
+/* map controls and legends that sit on top of the map */
+[class~="bg-[#08101f]/85"] {
+  background-color: rgba(255, 255, 255, 0.96);
+  border-color: rgba(15, 23, 42, 0.24);
+  color: #16233a;
+}
+
+/* the coolest magnitude band needs a darker hue on pale sea */
+svg circle[fill="#67e8f9"] {
+  fill: #0891b2;
+}
+
+svg circle[fill="#7dd3fc"] {
+  fill: #0284c7;
+}
+
+/* live-status pills: mint on pale mint needed more separation */
+[class~="bg-emerald-400/10"] {
+  background-color: rgba(16, 185, 129, 0.18);
+}
+
+[class~="text-emerald-100"] {
+  color: #065f46;
+}
